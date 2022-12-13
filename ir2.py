@@ -1,40 +1,42 @@
-documents = [
-    ['antony', 'brutus', 'caeser', 'cleopatra', 'mercy', 'worser'], 
-    ['antony', 'brutus', 'caeser', 'calpurnia'], 
-    ['mercy', 'worser'], ['brutus', 'caeser', 'mercy', 'worser'], 
-    ['caeser', 'mercy', 'worser'], 
-    ['antony', 'caeser', 'mercy'], 
-    ['angels', 'fools', 'fear', 'in', 'rush', 'tread', 'where'], 
-    ['angels', 'fools', 'fear', 'in', 'rush', 'tread', 'where'], 
-    ['angels', 'fools', 'in', 'rush', 'tread', 'where'], 
-    ['fools', 'fear', 'in', 'rush', 'tread', 'where']]
+from ir import terms_of_documents
 
-document_num=0
-postional_index={}
+# todo I comment all of that and will bring this list fro ir.py
+# documents = [
+#     ['antony', 'brutus', 'caeser', 'cleopatra', 'mercy', 'worser'],
+#     ['antony', 'brutus', 'caeser', 'calpurnia'],
+#     ['mercy', 'worser'], ['brutus', 'caeser', 'mercy', 'worser'],
+#     ['caeser', 'mercy', 'worser'],
+#     ['antony', 'caeser', 'mercy'],
+#     ['angels', 'fools', 'fear', 'in', 'rush', 'tread', 'where'],
+#     ['angels', 'fools', 'fear', 'in', 'rush', 'tread', 'where'],
+#     ['angels', 'fools', 'in', 'rush', 'tread', 'where'],
+#     ['fools', 'fear', 'in', 'rush', 'tread', 'where']]
 
-for document in documents:
-    for positional , term in enumerate(document):
+document_num = 1
+positional_index = {}
 
+for document_terms in terms_of_documents:
+    for position, term in enumerate(document_terms):
 
-        if term in postional_index:
-
-            postional_index[term][0] = postional_index[term][0]=1
-
-            if document_num in postional_index[term][1]:
-                postional_index[term][1][document_num].append(positional)
+        if term in positional_index:
+            # todo I add +1 here it was = 1
+            positional_index[term][0] = positional_index[term][0] + 1
+            # print(positional_index)
+            if document_num in positional_index[term][1]:  # that will return the keys
+                positional_index[term][1][document_num].append(position)
 
             else:
-                postional_index[term][1][document_num]=[positional]
-
+                positional_index[term][1][document_num] = [position]
 
         else:
-            postional_index[term]=[]
+            # {'antony':[]}
+            positional_index[term] = []
 
-            postional_index[term].append(1)
+            positional_index[term].append(1)
 
-            postional_index[term].append({})
+            positional_index[term].append({})
 
-            postional_index[term][1][document_num]=[positional]
+            positional_index[term][1][document_num] = [position]
 
-    document_num +=1
-print(postional_index)
+    document_num += 1
+print(positional_index)

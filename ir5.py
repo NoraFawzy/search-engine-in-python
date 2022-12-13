@@ -1,41 +1,31 @@
-documents = [
-    'antony brutus caeser cleopatra mercy worser',
-    'antony brutus caeser calpurnia ',
-    'mercy worser',
-    'brutus caeser mercy worser',
-    'caeser mercy worser',
-    'antony caeser mercy ',
-    'angels fools fear in rush to tread where',
-    'angels fools fear in rush to tread where',
-    'angels fools in rush to tread where',
-    'fools fear in rush to tread where',
-]
 import pandas as pd
-import numpy as np
-from  sklearn.feature_extraction.text import TfidfVectorizer
-vector = TfidfVectorizer()
-x = vector.fit_transform(documents)
-x = x.T.toarray()
+from ir3 import matched_docs, query as q
+from process_query import query_processing
+from ir4 import normalized_tf_idf
 
-df=pd.DataFrame(x,index=vector.get_feature_names_out())
+if matched_docs:
+    query_terms_table = query_processing(q)
+    matched_docs_table = pd.DataFrame(index=query_terms_table.index)
+    print(f'matched docs {matched_docs}')
+    for doc in matched_docs:
+        print(doc)
+        print(normalized_tf_idf['doc' + str(doc)])
 
-# print(df)
-query = 'antony brutus'
+        matched_docs_table['doc' + str(doc)] = normalized_tf_idf['doc' + str(doc)].multiply(
+            query_terms_table['normalized'], axis=0)
 
-q = [query]
+    matched_docs_table.loc['sum'] = [matched_docs_table['doc' + str(doc)].sum() for doc in matched_docs]
+    print('product ( query * matched docs)')
+    print(matched_docs_table)
+    # convert the sum row to dic so I can handle it better
+    docs_scores = matched_docs_table.loc['sum'].to_dict()
+    # print cosine similarity of docs
+    for doc in docs_scores:
+        print(f'cosine similarity in (q, {doc}) = {docs_scores[doc]}')
 
-q_vector=vector.transform(q).toarray().reshape(df.shape[0])
-
-similarty = {}
-
-for i in range(10):
-    similarty[i]=np.dot(df.loc[:,i].values,q_vector)/np.linalg.norm(df.loc[:,i]) * np.linalg.norm(q_vector)
-
-print (similarty)
-
-similarty_sorted=sorted(similarty.items(),key=lambda x: x[1])
-for document, score in similarty_sorted:
-    # if score >0.5:
-        print('doc is :',document)
-        print('similar scor=',score)
-        
+    sorted_docs_score = dict(reversed(sorted(docs_scores.items(), key=lambda item: item[1])))
+    print('returned docs :')
+    for doc in sorted_docs_score:
+        print(doc)
+else :
+    print('No matched docs')
