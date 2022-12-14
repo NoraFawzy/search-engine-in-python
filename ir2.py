@@ -1,6 +1,4 @@
 from ir import terms_of_documents
-
-# todo I comment all of that and will bring this list fro ir.py
 # documents = [
 #     ['antony', 'brutus', 'caeser', 'cleopatra', 'mercy', 'worser'],
 #     ['antony', 'brutus', 'caeser', 'calpurnia'],
@@ -19,7 +17,6 @@ for document_terms in terms_of_documents:
     for position, term in enumerate(document_terms):
 
         if term in positional_index:
-            # todo I add +1 here it was = 1
             positional_index[term][0] = positional_index[term][0] + 1
             # print(positional_index)
             if document_num in positional_index[term][1]:  # that will return the keys

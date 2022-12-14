@@ -8,6 +8,7 @@ import numpy as np
 def query_processing(query):
     query_terms_list = tokenizer(query)
     table = pd.DataFrame(index=positional_index)
+    print(table)
     table['query_terms'] = [1 if x in query_terms_list else 0 for x in list(positional_index)]
     print(table)
     query_terms = table.index[table['query_terms'] == 1].tolist()

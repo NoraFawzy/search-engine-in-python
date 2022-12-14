@@ -14,31 +14,34 @@
 # 'tread':     [4, {6: [5], 7: [5], 8: [4], 9: [4]}],
 # 'where':     [4, {6: [6], 7: [6], 8: [5], 9: [5]}]
 # }
-from nltk.tokenize import word_tokenize
+
 from toknize import tokenizer
-from nltk.corpus import stopwords
 from ir2 import positional_index
 
 print(positional_index)
 # query = 'fools fear'
-query = 'antony brutus'
+query = input("Enter your query: ")
 final_list = [[] for i in range(10)]
+
 query_terms_list = tokenizer(query)
 
-for word in query_terms_list:
-    for key in positional_index[word][1].keys():
-
-        if final_list[key-1]:  # this is equal to final_list[key-1] != []
-            if final_list[key-1][-1] == positional_index[word][1][key][0]-1:
+for word in query_terms_list:  # ['antony', 'brutus']
+    if word in positional_index.keys():
+        for key in positional_index[word][1].keys():  # [1, 2, 4]
+            if final_list[key-1]:  # this is equal to final_list[key-1] != []
+                # checks if the word is after the previous one
+                if final_list[key-1][-1] == positional_index[word][1][key][0]-1:
+                    final_list[key-1].append(positional_index[word][1][key][0])
+            else:
                 final_list[key-1].append(positional_index[word][1][key][0])
-        else:
-            final_list[key-1].append(positional_index[word][1][key][0])
-print(final_list)
+                # [0:[0, 1],1:[0, 1],2:[],3:[0],4:[],5:[0],6:[],7:[],8:[],9:[]]
+# print(final_list)
 matched_docs = []
+
 for position, list1 in enumerate(final_list, start=1):
     # print(postion,list)
 
-    if len(list1) == len(query.split()):
+    if len(list1) == len(query_terms_list):
         matched_docs.append(position)
         # print(position)
 print(matched_docs)
